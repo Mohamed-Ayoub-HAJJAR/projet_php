@@ -20,3 +20,10 @@ INSERT INTO produits (nom, description, prix) VALUES
 ('Tapis de Souris XXL', 'Tapis de souris étendu protégeant tout le bureau.', 19.95),
 ('Support d''Ordinateur', 'Support en aluminium ventilé et ajustable en hauteur.', 34.99),
 ('Enceintes PC', 'Système audio 2.1 avec caisson de basses compact.', 45.00);
+
+CREATE TABLE IF NOT EXISTS user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    login VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    nom VARCHAR(100) NOT NULL
+);
