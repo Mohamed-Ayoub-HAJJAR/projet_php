@@ -11,11 +11,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($login) && !empty($password) && !empty($nom)) {
         try {
-            // Insertion directe du mot de passe en texte clair
-            $stmt = $pdo->prepare("INSERT INTO utilisateurs (login, password, nom) VALUES (:login, :password, :nom)");
+            // 1. On hache le mot de passe de manière sécurisée
+            $passwordHache = password_hash($password, PASSWORD_DEFAULT);
+
+            // 2. On prépare la requête
+            $stmt = $pdo->prepare("INSERT INTO user (login, password, nom) VALUES (:login, :password, :nom)");
+
+            // 3. On insère le mot de passe HACHÉ en base de données
             $stmt->execute([
                 'login'    => $login,
-                'password' => $password, // <--- Pas de hachage ici
+                'password' => $passwordHache, // <--- Sécurisé !
                 'nom'      => $nom
             ]);
 

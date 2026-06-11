@@ -9,17 +9,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($login) && !empty($password)) {
 
-        // Recherche de l'utilisateur par son login
-        $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = ?");
-        $stmt->execute([$login]);
+        // 1. Recherche de l'utilisateur par son login (avec paramètre nommé :login)
+        $stmt = $pdo->prepare("SELECT * FROM user WHERE login = :login");
+        $stmt->execute(['login' => $login]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // VÉRIFICATION DIRECTE (Sans password_verify)
-        if ($user && $user['password'] === $password) {
+        // 2. VÉRIFICATION SÉCURISÉE 
+        // password_verify vérifie si le mot de passe saisi correspond au hachage stocké
+        if ($user && password_verify($password, $user['password'])) {
+
             // Authentification réussie
+            // (Optionnel : pense à démarrer une session ici si ce n'est pas fait : $_SESSION['user'] = $user;)
             header('Location: index.php');
             exit;
         } else {
+            // Sécurité : On garde le même message que le login soit faux ou le mot de passe soit faux
             $erreur = "Login ou mot de passe incorrect.";
         }
     } else {
